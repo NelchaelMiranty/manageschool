@@ -1,0 +1,304 @@
+.labi {
+
+	/*background-image:url(../img/aidev.png);*/
+
+	}
+
+.e3{
+
+    background:white;
+
+ }   
+
+.marge0{
+
+	margin-left:0;
+
+    float:left;
+
+	margin-top: 0;
+
+        }
+
+.end{
+
+    padding:0;
+
+    margin:0;
+
+    line-height:1px;
+
+    font-family:Agency FB; 
+
+    font-size: 30;
+
+    color:white;
+
+    }  
+
+.logo {
+
+        margin-left: 3.0cm;
+
+        margin-top:0.2cm;
+
+        /*position:absolute;*/
+
+	}
+
+#valid{
+
+     background: orange;   
+
+} 
+
+#login {
+
+	float:right;
+
+	padding-left: 3cm;
+
+    margin-top:0.5cm;
+
+        } 
+
+.cours{ 
+
+	line-height:1px;
+
+	font-family:Agency FB; 
+
+	color:white;
+
+        
+
+        }
+
+ .classep{
+
+    left: 2cm;
+
+    top: 1cm;
+
+    position: absolute;
+
+    
+
+    }     
+
+ .lesson{
+
+    left: 10cm;
+
+    top: 1cm;
+
+    position: absolute;
+
+    
+
+    }            
+
+ 
+
+       
+
+ h3{
+
+    font-size: 18px; 
+
+    font-family:Agency FB; 
+
+    font-weight:bold; 
+
+    color: grey;
+
+ }   
+
+
+
+
+
+.log {
+
+	padding:0;
+
+	margin:0;
+
+	line-height:1px;
+
+	font-family:Agency FB; 
+
+	color:black;
+
+	} 
+
+.loga {
+
+	padding:0;
+
+	margin:0;
+
+	line-height:1px;
+
+	font-family:Agency FB; 
+
+	color:#000000;
+
+  	} 
+
+.demo {
+
+	padding:0;
+
+	margin:0;
+
+	line-height:1px;
+
+	font-family:Agency FB; 
+
+	color:red;
+
+	}
+
+.chap {
+
+    padding:0;
+
+    margin:0;
+
+    line-height:1px;
+
+    font-family:Agency FB; 
+
+    color:green;
+
+    }  
+
+
+
+.link {
+
+       color: orange;     
+
+        }
+
+
+
+#ext{
+
+	width:92.5%;
+
+	}
+
+
+
+titre{
+
+        font-family:Calibri; 
+
+         color: orange;
+
+       /* background: white;*/
+
+        font-size: 24px; 
+
+        left:2cm;
+
+        
+
+    }
+
+#fichupload{
+
+        font-family:Calibri; 
+
+        color: white;
+
+        /*background: white;*/
+
+       }    
+
+
+
+#preinscri{
+
+	width:680px;
+
+    top:100px;
+
+    left:50px;
+
+    position:absolute;
+
+        
+
+	}
+
+
+
+#container{
+
+        left: 10cm;
+
+        top: 0cm;
+
+        position: absolute;
+        margin-left: 200px; 
+
+        }
+
+
+#menu {
+         clear:left;  
+        }
+#ext{
+    width:92.5%;
+    }
+#menu ul {
+    margin:0 auto;
+    padding:0;
+    list-style-type:none;
+    text-align:center;
+    font-size: 18px; 
+    font-family:Agency FB; 
+    font-weight:bold; 
+    }
+#menu li {
+    float:left;
+    margin:auto;
+    padding:0;
+    background-color:#808080;
+    }
+
+#menu li a{
+    display:block;
+    width:100px;
+    color:white;
+    text-decoration:none;
+    padding:5px;
+    }
+
+#menu li a:hover {
+    color:#FFCC66;
+    }
+#menu ul li ul{
+    display:none;
+    }
+#menu ul li:hover ul{
+    display:block; 
+    }
+
+#menu li:hover ul li {
+    float:none;
+    }
+#menu li ul {
+    position:absolute;
+    }
+#menu li .sousmenu a:hover {
+    color:yellow;
+    }
+
+.positioned {
+    position: relative;
+    left: 200px; /* Déplace l'élément de 20 pixels vers la droite */
+}
