@@ -24,6 +24,7 @@
                   <div class="flex-item"><a href=javascript:void(0); onClick="change()"> ENSEIGNANTS </a></div>
                   <div class="flex-item"><a href=javascript:void(0); onClick="change()"> ETUDIANTS </a></div>
                   <div class="flex-item"><a href=javascript:void(0); onClick="change()"> MATIERES </a></div>
+                  <div class="flex-item"><a href="index.php?action=gestionAcademique"> GESTION ACADÉMIQUE </a></div>
                   
             </div>
                           

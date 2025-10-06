@@ -173,3 +173,50 @@ function listProfs()
   require('view/frontend/profsView.php');
   
 }
+function gestionAcademique()
+{
+    require('view/frontend/gestionAcademiqueView.php');
+}
+
+function getEnseignantsAPI()
+{
+    header("Content-Type: application/json; charset=UTF-8");
+    $profMan = new ProfManager();
+    $req = $profMan->getProfs();
+    $enseignants = [];
+    
+    while ($prof = $req->fetch()) {
+        $enseignants[] = [
+            'id' => $prof['prid'],
+            'nom' => $prof['nom'],
+            'prenom' => $prof['prenom'],
+            'mention' => 'Informatique', // Default value, you can modify based on your database
+            'diplome' => 'Master', // Default value
+            'etablissement' => 'AI&DEV Academy', // Default value
+            'cv' => null
+        ];
+    }
+    
+    echo json_encode($enseignants);
+}
+
+function getEtudiantsAPI()
+{
+    header("Content-Type: application/json; charset=UTF-8");
+    $studMan = new StudentManager();
+    $req = $studMan->getStudents();
+    $etudiants = [];
+    
+    while ($stud = $req->fetch()) {
+        $etudiants[] = [
+            'id' => $stud['aid'],
+            'nom' => $stud['nom'],
+            'prenom' => $stud['prenom'],
+            'niveau' => 'L3', // Default value, you can modify based on your database
+            'mention' => 'Informatique', // Default value
+            'matricule' => 'ETU' . str_pad($stud['aid'], 3, '0', STR_PAD_LEFT)
+        ];
+    }
+    
+    echo json_encode($etudiants);
+}

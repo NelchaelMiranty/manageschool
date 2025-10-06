@@ -110,6 +110,18 @@ try{
                     listEtud();
                 
             }      
+        elseif ($_GET['action'] == 'gestionAcademique') 
+            {
+                gestionAcademique();
+            }
+        elseif ($_GET['action'] == 'getEnseignantsAPI') 
+            {
+                getEnseignantsAPI();
+            }
+        elseif ($_GET['action'] == 'getEtudiantsAPI') 
+            {
+                getEtudiantsAPI();
+            }
         elseif ($_GET['action'] == 'authentprof' ) 
              {
 
