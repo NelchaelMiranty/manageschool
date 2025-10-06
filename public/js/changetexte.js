@@ -28,33 +28,46 @@ window.onload = function change(){
 
 
 function checkPassword(){
-      
+
        var xmlhttp = new XMLHttpRequest();
        var obj={pseudo:$('#pseudo').val(),pwd:$('#password_input').val() };
        var dbParam = JSON.stringify(obj);
-       
-       //alert('Bonjour! Tu seras informé dès que ce sera prêt!');
+
+       Swal.fire({
+            title: 'Connexion en cours...',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
         xmlhttp.onreadystatechange = function () {
-          //alert(this.readyState);
-          //alert(this.status);
-          //alert(this.responseText);
-          if (this.readyState == 4 && this.status == 200) 
+          if (this.readyState == 4 && this.status == 200)
           {
                 var myObj = JSON.parse(this.responseText);
-                //alert (myObj._id);
                 if(myObj._msg.localeCompare("OK")==0)
-                {  
-                    document.getElementById("connectSt").innerHTML='<a id="continue" class="loga" href="index.php?action=listMat" > Bonjour! Cliquez ici pour continuer</a>';
-                    document.getElementById("continue").style.color = '#00FFEF';
-                    document.getElementById("connectPr").style.display = 'none';
-                   
+                {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Connexion réussie!',
+                        text: 'Bonjour ' + myObj._name + '! Redirection en cours...',
+                        timer: 2000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.href = "index.php?action=listMat";
+                    });
                 }
                 else
                 {
-                  alert('Accès refusé');
+                  Swal.fire({
+                        icon: 'error',
+                        title: 'Accès refusé',
+                        text: 'Pseudo ou mot de passe incorrect',
+                        confirmButtonColor: '#667eea'
+                    });
                 }
          }
-        }; 
+        };
         xmlhttp.open("POST", "index.php?action=authent", true);
         xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xmlhttp.send("x=" + dbParam);
@@ -63,33 +76,50 @@ function checkPassword(){
 
 
    	function checkPasswordP(){
-       
+
        var xmlhttp = new XMLHttpRequest();
        var obj={pseudo:$('#pseudo').val(),pwd:$('#password_input').val() };
        var dbParam = JSON.stringify(obj);
-      
+
+       Swal.fire({
+            title: 'Connexion en cours...',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
 
        xmlhttp.onreadystatechange = function() {
-         
-          if (this.readyState == 4 && this.status == 200) 
+
+          if (this.readyState == 4 && this.status == 200)
           {
                 var myObj = JSON.parse(this.responseText);
-                
+
                 if(myObj._msg.localeCompare("OK")==0)
-                {  
-                    document.getElementById("connectPr").innerHTML='<a id="continue" class="log" href="index.php?action=listMatP&id='+myObj._id+'" > Bonjour! Cliquez ici pour continuer</a>';
-                    document.getElementById("continue").style.color = 'orange';
-                    document.getElementById("pre").style.display = 'none';
-                    document.getElementById("connectSt").style.display = 'none';
+                {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Connexion réussie!',
+                        text: 'Bienvenue formateur! Redirection en cours...',
+                        timer: 2000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.href = "index.php?action=listMatP&id=" + myObj._id;
+                    });
                 }
                 else
                 {
-                  alert('Accès refusé');
+                  Swal.fire({
+                        icon: 'error',
+                        title: 'Accès refusé',
+                        text: 'Pseudo ou mot de passe incorrect',
+                        confirmButtonColor: '#f5576c'
+                    });
                 }
          }
-        
+
       };
-       
+
         xmlhttp.open("POST", "index.php?action=authentprof", true);
         xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xmlhttp.send("x=" + dbParam);
@@ -160,31 +190,50 @@ function listProfs() {
 }
 
 function uploadDoc(){
-   
-   //alert('uploaddoc');
+
    var form_data = new FormData();
    var oFReader = new FileReader();
-  
+
    var matId =document.getElementById("matId").value;
    var f = document.getElementById("myfile").files[0];
+
+   if(!f) {
+       Swal.fire({
+           icon: 'warning',
+           title: 'Aucun fichier sélectionné',
+           text: 'Veuillez sélectionner un fichier',
+           confirmButtonColor: '#667eea'
+       });
+       return;
+   }
+
    var name = f.name;
-  // alert(matId+name);
    oFReader.readAsDataURL(f);
-  
+
    var fsize = f.size||f.fileSize;
    if(fsize > 10000000)
     {
-    alert("Fichier trop gros");
+       Swal.fire({
+           icon: 'error',
+           title: 'Fichier trop volumineux',
+           text: 'La taille du fichier ne doit pas dépasser 10 Mo',
+           confirmButtonColor: '#667eea'
+       });
     }
     else
     {
-     // alert("Le fichier n'est pas trop gros");
-     
       form_data.append("myfile", f);
       form_data.append("matId",matId);
       form_data.append("nomf",name);
-      //alert(form_data.get("matId")+ form_data.get("myfile"));
-      
+
+      Swal.fire({
+          title: 'Téléchargement en cours...',
+          allowOutsideClick: false,
+          didOpen: () => {
+              Swal.showLoading();
+          }
+      });
+
       $.ajax({
         url:"index.php?action=uploadDoc",
         method:"POST",
@@ -192,43 +241,73 @@ function uploadDoc(){
         contentType: false,
         cache: false,
         processData: false,
-        success: function(data) {  
-                  alert('upload success'); },             
-         error: function() {                
-              alert('La requête n\'a pas abouti'); 
-            }   
+        success: function(data) {
+                  Swal.fire({
+                      icon: 'success',
+                      title: 'Téléchargement réussi!',
+                      text: 'Le document a été ajouté avec succès',
+                      confirmButtonColor: '#667eea'
+                  }).then(() => {
+                      location.reload();
+                  });
+              },
+         error: function() {
+              Swal.fire({
+                  icon: 'error',
+                  title: 'Erreur',
+                  text: 'La requête n\'a pas abouti',
+                  confirmButtonColor: '#667eea'
+              });
+            }
         });
     }
  }
 
  function uploadDev(){
-   
-   //alert('uploaddev');
+
    var form_data = new FormData();
    var oFReader = new FileReader();
-  
+
    var matId =document.getElementById("matId").value;
-   //var id =document.getElementById("pid").value;
    var f = document.getElementById("myfile").files[0];
+
+   if(!f) {
+       Swal.fire({
+           icon: 'warning',
+           title: 'Aucun fichier sélectionné',
+           text: 'Veuillez sélectionner un fichier',
+           confirmButtonColor: '#667eea'
+       });
+       return;
+   }
+
    var name = f.name;
-   //alert(matId+" "+name);
    oFReader.readAsDataURL(f);
-  
+
    var fsize = f.size||f.fileSize;
    if(fsize > 10000000)
     {
-    alert("Fichier trop gros");
+       Swal.fire({
+           icon: 'error',
+           title: 'Fichier trop volumineux',
+           text: 'La taille du fichier ne doit pas dépasser 10 Mo',
+           confirmButtonColor: '#667eea'
+       });
     }
     else
     {
-      //alert(" fichier OK");
-     
       form_data.append("myfile", f);
       form_data.append("matId",matId);
-     // form_data.append("pid", id);
       form_data.append("nomf",name);
-      //alert(form_data.get("matId")+ form_data.get("myfile"));
-      
+
+      Swal.fire({
+          title: 'Téléchargement en cours...',
+          allowOutsideClick: false,
+          didOpen: () => {
+              Swal.showLoading();
+          }
+      });
+
       $.ajax({
         url:"index.php?action=uploadDev",
         method:"POST",
@@ -236,11 +315,24 @@ function uploadDoc(){
         contentType: false,
         cache: false,
         processData: false,
-        success: function(data) {  
-                  alert('upload success'); },             
-         error: function() {                
-              alert('La requête n\'a pas abouti'); 
-            }   
+        success: function(data) {
+                  Swal.fire({
+                      icon: 'success',
+                      title: 'Téléchargement réussi!',
+                      text: 'Votre devoir a été envoyé avec succès',
+                      confirmButtonColor: '#667eea'
+                  }).then(() => {
+                      location.reload();
+                  });
+              },
+         error: function() {
+              Swal.fire({
+                  icon: 'error',
+                  title: 'Erreur',
+                  text: 'La requête n\'a pas abouti',
+                  confirmButtonColor: '#667eea'
+              });
+            }
         });
     }
  }
