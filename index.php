@@ -118,9 +118,49 @@ try{
             {
                 getEnseignantsAPI();
             }
-        elseif ($_GET['action'] == 'getEtudiantsAPI') 
+        elseif ($_GET['action'] == 'getEtudiantsAPI')
             {
                 getEtudiantsAPI();
+            }
+        elseif ($_GET['action'] == 'gestionAcademiqueV2')
+            {
+                gestionAcademiqueV2();
+            }
+        elseif ($_GET['action'] == 'enseignantsList')
+            {
+                enseignantsList();
+            }
+        elseif ($_GET['action'] == 'enseignantCreate')
+            {
+                enseignantCreate();
+            }
+        elseif ($_GET['action'] == 'enseignantUpdate')
+            {
+                enseignantUpdate();
+            }
+        elseif ($_GET['action'] == 'enseignantDelete')
+            {
+                enseignantDelete();
+            }
+        elseif ($_GET['action'] == 'etudiantsList')
+            {
+                etudiantsList();
+            }
+        elseif ($_GET['action'] == 'etudiantCreate')
+            {
+                etudiantCreate();
+            }
+        elseif ($_GET['action'] == 'etudiantUpdate')
+            {
+                etudiantUpdate();
+            }
+        elseif ($_GET['action'] == 'etudiantDelete')
+            {
+                etudiantDelete();
+            }
+        elseif ($_GET['action'] == 'historiqueList')
+            {
+                historiqueList();
             }
         elseif ($_GET['action'] == 'authentprof' ) 
              {

@@ -5,7 +5,9 @@ require_once('model/frontend/StudentManager.php');
 require_once('model/frontend/MatManager.php');
 require_once('model/frontend/ProfManager.php');
 require_once('model/frontend/CoursManager.php');
-//require_once('model/frontend/DevManager.php');
+require_once('model/frontend/EnseignantManager.php');
+require_once('model/frontend/EtudiantManager.php');
+require_once('model/frontend/HistoriqueManager.php');
 
 function accueil()
 {
@@ -206,7 +208,7 @@ function getEtudiantsAPI()
     $studMan = new StudentManager();
     $req = $studMan->getStudents();
     $etudiants = [];
-    
+
     while ($stud = $req->fetch()) {
         $etudiants[] = [
             'id' => $stud['aid'],
@@ -217,6 +219,284 @@ function getEtudiantsAPI()
             'matricule' => 'ETU' . str_pad($stud['aid'], 3, '0', STR_PAD_LEFT)
         ];
     }
-    
+
     echo json_encode($etudiants);
+}
+
+function gestionAcademiqueV2()
+{
+    require('view/frontend/gestionAcademiqueV2View.php');
+}
+
+function enseignantsList()
+{
+    $enseignantMan = new EnseignantManager();
+    $enseignants = $enseignantMan->getAllEnseignants();
+    header('Content-Type: application/json');
+    echo json_encode(['success' => true, 'data' => $enseignants]);
+    exit;
+}
+
+function enseignantCreate()
+{
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'message' => 'Method not allowed']);
+        exit;
+    }
+
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    $cv_url = null;
+    $cv_filename = null;
+
+    if (isset($data['cv']) && !empty($data['cv'])) {
+        $cv_filename = uniqid() . '_' . ($data['cv_filename'] ?? 'cv.pdf');
+        $cv_url = $data['cv'];
+    }
+
+    $enseignantMan = new EnseignantManager();
+    $result = $enseignantMan->createEnseignant([
+        'nom' => $data['nom'],
+        'prenom' => $data['prenom'],
+        'mention' => $data['mention'],
+        'diplome' => $data['diplome'],
+        'etablissement' => $data['etablissement'],
+        'cv_filename' => $cv_filename,
+        'cv_url' => $cv_url
+    ]);
+
+    header('Content-Type: application/json');
+    if ($result) {
+        echo json_encode(['success' => true, 'data' => $result]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Failed to create enseignant']);
+    }
+    exit;
+}
+
+function enseignantUpdate()
+{
+    if ($_SERVER['REQUEST_METHOD'] !== 'PUT' && $_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'message' => 'Method not allowed']);
+        exit;
+    }
+
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    if (!isset($data['id'])) {
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'message' => 'ID is required']);
+        exit;
+    }
+
+    $cv_url = $data['cv_url'] ?? null;
+    $cv_filename = $data['cv_filename'] ?? null;
+
+    if (isset($data['cv']) && !empty($data['cv'])) {
+        $cv_filename = uniqid() . '_' . ($data['cv_filename'] ?? 'cv.pdf');
+        $cv_url = $data['cv'];
+    }
+
+    $enseignantMan = new EnseignantManager();
+    $result = $enseignantMan->updateEnseignant($data['id'], [
+        'nom' => $data['nom'],
+        'prenom' => $data['prenom'],
+        'mention' => $data['mention'],
+        'diplome' => $data['diplome'],
+        'etablissement' => $data['etablissement'],
+        'cv_filename' => $cv_filename,
+        'cv_url' => $cv_url
+    ]);
+
+    header('Content-Type: application/json');
+    if ($result) {
+        echo json_encode(['success' => true, 'data' => $result]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Failed to update enseignant']);
+    }
+    exit;
+}
+
+function enseignantDelete()
+{
+    if ($_SERVER['REQUEST_METHOD'] !== 'DELETE' && $_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'message' => 'Method not allowed']);
+        exit;
+    }
+
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    if (!isset($data['id'])) {
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'message' => 'ID is required']);
+        exit;
+    }
+
+    $enseignantMan = new EnseignantManager();
+    $result = $enseignantMan->deleteEnseignant($data['id']);
+
+    header('Content-Type: application/json');
+    if ($result) {
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Failed to delete enseignant']);
+    }
+    exit;
+}
+
+function etudiantsList()
+{
+    $etudiantMan = new EtudiantManager();
+    $etudiants = $etudiantMan->getAllEtudiants();
+    header('Content-Type: application/json');
+    echo json_encode(['success' => true, 'data' => $etudiants]);
+    exit;
+}
+
+function etudiantCreate()
+{
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'message' => 'Method not allowed']);
+        exit;
+    }
+
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    $photo_url = $data['photo_url'] ?? null;
+
+    if (isset($data['photo']) && !empty($data['photo'])) {
+        $photo_url = $data['photo'];
+    }
+
+    $etudiantMan = new EtudiantManager();
+    $result = $etudiantMan->createEtudiant([
+        'nom' => $data['nom'],
+        'prenom' => $data['prenom'],
+        'niveau' => $data['niveau'],
+        'mention' => $data['mention'],
+        'matricule' => $data['matricule'],
+        'photo_url' => $photo_url
+    ]);
+
+    if ($result) {
+        $historiqueMan = new HistoriqueManager();
+        $historiqueMan->createHistorique([
+            'action' => 'Inscription',
+            'etudiant_id' => $result[0]['id'] ?? null,
+            'etudiant_nom' => $data['prenom'] . ' ' . $data['nom'],
+            'details' => 'Inscrit en ' . $data['niveau'] . ' ' . $data['mention']
+        ]);
+    }
+
+    header('Content-Type: application/json');
+    if ($result) {
+        echo json_encode(['success' => true, 'data' => $result]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Failed to create etudiant']);
+    }
+    exit;
+}
+
+function etudiantUpdate()
+{
+    if ($_SERVER['REQUEST_METHOD'] !== 'PUT' && $_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'message' => 'Method not allowed']);
+        exit;
+    }
+
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    if (!isset($data['id'])) {
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'message' => 'ID is required']);
+        exit;
+    }
+
+    $photo_url = $data['photo_url'] ?? null;
+
+    if (isset($data['photo']) && !empty($data['photo'])) {
+        $photo_url = $data['photo'];
+    }
+
+    $etudiantMan = new EtudiantManager();
+    $result = $etudiantMan->updateEtudiant($data['id'], [
+        'nom' => $data['nom'],
+        'prenom' => $data['prenom'],
+        'niveau' => $data['niveau'],
+        'mention' => $data['mention'],
+        'matricule' => $data['matricule'],
+        'photo_url' => $photo_url
+    ]);
+
+    if ($result) {
+        $historiqueMan = new HistoriqueManager();
+        $historiqueMan->createHistorique([
+            'action' => 'Modification',
+            'etudiant_id' => $data['id'],
+            'etudiant_nom' => $data['prenom'] . ' ' . $data['nom'],
+            'details' => 'Informations modifiées'
+        ]);
+    }
+
+    header('Content-Type: application/json');
+    if ($result) {
+        echo json_encode(['success' => true, 'data' => $result]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Failed to update etudiant']);
+    }
+    exit;
+}
+
+function etudiantDelete()
+{
+    if ($_SERVER['REQUEST_METHOD'] !== 'DELETE' && $_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'message' => 'Method not allowed']);
+        exit;
+    }
+
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    if (!isset($data['id'])) {
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'message' => 'ID is required']);
+        exit;
+    }
+
+    $etudiantMan = new EtudiantManager();
+    $etudiant = $etudiantMan->getEtudiant($data['id']);
+
+    $result = $etudiantMan->deleteEtudiant($data['id']);
+
+    if ($result && $etudiant) {
+        $historiqueMan = new HistoriqueManager();
+        $historiqueMan->createHistorique([
+            'action' => 'Suppression',
+            'etudiant_id' => null,
+            'etudiant_nom' => ($etudiant->prenom ?? '') . ' ' . ($etudiant->nom ?? ''),
+            'details' => 'Étudiant supprimé du système'
+        ]);
+    }
+
+    header('Content-Type: application/json');
+    if ($result) {
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Failed to delete etudiant']);
+    }
+    exit;
+}
+
+function historiqueList()
+{
+    $historiqueMan = new HistoriqueManager();
+    $historique = $historiqueMan->getAllHistorique();
+    header('Content-Type: application/json');
+    echo json_encode(['success' => true, 'data' => $historique]);
+    exit;
 }

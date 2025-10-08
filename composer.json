@@ -1,0 +1,15 @@
+{
+    "name": "aidev/gestion-academique",
+    "description": "Système de gestion académique avec Supabase",
+    "type": "project",
+    "require": {
+        "php": ">=7.4",
+        "vlucas/phpdotenv": "^5.5",
+        "supabase/supabase-php": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    }
+}
